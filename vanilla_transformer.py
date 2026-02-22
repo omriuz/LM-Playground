@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 @chz.chz
 class TransformerConfig:
-    dataset: str = "shakespeare.txt"
+    dataset: str = "tiny_shakespeare.txt"
     hidden_dim: int = 256
     n_layers: int = 12
     batch_size: int = 64
@@ -123,7 +123,7 @@ class TransformerLLM(nn.Module):
         self.pos_embs = PositionalEmbeddings(hidden_dim, device=self.device)
         self.layers = nn.ModuleList([TransformerBlock(hidden_dim, i,n_heads, device) for i in range(n_layers)])
         self.lm_head = nn.Linear(hidden_dim, vocab_dim, bias=False)
-        # self.lm_head.weight = self.embedding.weight
+        self.lm_head.weight = self.embedding.weight
 
     def forward(self,x):
         hidden = self.embedding(x)
@@ -170,10 +170,10 @@ class Tokenizer():
         
 
 def main(c: TransformerConfig):
-    torch.autograd.set_detect_anomaly(True)
+    # torch.autograd.set_detect_anomaly(True)
     set_seed(42)
 
-    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+    device = torch.device('cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu')
     print("device:", device)
 
     torch.set_default_device("mps")
