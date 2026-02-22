@@ -203,7 +203,7 @@ def main(c: TransformerConfig):
         y = torch.stack([ids[i+1:i+block_size+1] for i in ix])
         return x, y
     
-    num_steps = 50
+    num_steps = 150
     for step in tqdm(range(num_steps)):
         x, y = get_batch(c.batch_size)
         optimizer.zero_grad()
